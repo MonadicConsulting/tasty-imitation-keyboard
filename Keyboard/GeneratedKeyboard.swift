@@ -4,72 +4,50 @@ import UIKit
 func generatedKeyboard() -> Keyboard {
     let defaultKeyboard = Keyboard()
     
-    let isPad = UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Pad
+    let isPad = UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad
 
     var longPresses = generatedGetLongPresses();
     
-    defaultKeyboard.addKey(Key(.Shift), row: 2, page: 0)
+    defaultKeyboard.addKey(Key(.shift), row: 2, page: 0)
     
-    for key in ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"] {
-        let keyModel = Key(.Character)
+    let topRow = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"].map { ($0, 0) }
+    let middleRow = ["A", "S", "D", "F", "G", "H", "J", "K", "L"].map { ($0, 1) }
+    let bottomRow = ["Z", "X", "C", "V", "B", "N", "M"].map { ($0, 2) }
+
+    (topRow + middleRow + bottomRow).forEach { (key, row) in
+        let keyModel = Key(.character)
         keyModel.setLetter(key)
         if let lp = longPresses[key] {
             keyModel.setUppercaseLongPress(lp)
         }
-        if let lp = longPresses[key.lowercaseString] {
+        if let lp = longPresses[key.lowercased()] {
             keyModel.setLowercaseLongPress(lp)
         }
-
-        defaultKeyboard.addKey(keyModel, row: 0, page: 0)
-    }
-    
-    for key in ["A", "S", "D", "F", "G", "H", "J", "K", "L"] {
-        let keyModel = Key(.Character)
-        keyModel.setLetter(key)
-        if let lp = longPresses[key] {
-            keyModel.setUppercaseLongPress(lp)
-        }
-        if let lp = longPresses[key.lowercaseString] {
-            keyModel.setLowercaseLongPress(lp)
-        }
-
-        defaultKeyboard.addKey(keyModel, row: 1, page: 0)
-    }
-    
-    for key in ["Z", "X", "C", "V", "B", "N", "M"] {
-        let keyModel = Key(.Character)
-        keyModel.setLetter(key)
-        if let lp = longPresses[key] {
-            keyModel.setUppercaseLongPress(lp)
-        }
-        if let lp = longPresses[key.lowercaseString] {
-            keyModel.setLowercaseLongPress(lp)
-        }
-
-        defaultKeyboard.addKey(keyModel, row: 2, page: 0)
+        
+        defaultKeyboard.addKey(keyModel, row: row, page: 0)
     }
     
     if isPad {
-        defaultKeyboard.addKey(Key(.Backspace), row: 0, page: 0)
-        let returnKey = Key(.Return)
+        defaultKeyboard.addKey(Key(.backspace), row: 0, page: 0)
+        let returnKey = Key(.return)
         returnKey.uppercaseKeyCap = "return"
         returnKey.uppercaseOutput = "\n"
         returnKey.lowercaseOutput = "\n"
         defaultKeyboard.addKey(returnKey, row: 1, page: 0)
         
-        let commaKey = Key(.SpecialCharacter)
+        let commaKey = Key(.specialCharacter)
         commaKey.uppercaseKeyCap = "!\n,"
         commaKey.uppercaseOutput = "!"
         commaKey.lowercaseOutput = ","
         defaultKeyboard.addKey(commaKey, row: 2, page: 0)
         
-        let periodKey = Key(.SpecialCharacter)
+        let periodKey = Key(.specialCharacter)
         periodKey.uppercaseKeyCap = "?\n."
         periodKey.uppercaseOutput = "?"
         periodKey.lowercaseOutput = "."
         defaultKeyboard.addKey(periodKey, row: 2, page: 0)
         
-        defaultKeyboard.addKey(Key(.Shift), row: 2, page: 0)
+        defaultKeyboard.addKey(Key(.shift), row: 2, page: 0)
     } else {
         /*
         let commaKey = Key(.SpecialCharacter)
@@ -84,7 +62,7 @@ func generatedKeyboard() -> Keyboard {
         periodKey.lowercaseOutput = "."
         defaultKeyboard.addKey(periodKey, row: 2, page: 0)
         */
-        defaultKeyboard.addKey(Key(.Backspace), row: 2, page: 0)
+        defaultKeyboard.addKey(Key(.backspace), row: 2, page: 0)
     }
 
     return defaultKeyboard

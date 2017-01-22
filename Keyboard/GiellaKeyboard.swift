@@ -11,7 +11,7 @@ import UIKit
 class GiellaKeyboard: KeyboardViewController {
     var keyNames: [String: String]
     
-    override func keyPressed(key: Key) {
+    override func keyPressed(_ key: Key) {
         let textDocumentProxy = self.textDocumentProxy as UIKeyInput
         
         textDocumentProxy.insertText(key.outputForCase(self.shiftState.uppercase()))
@@ -38,12 +38,12 @@ class GiellaKeyboard: KeyboardViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func setSpaceLocalName(keyView: KeyboardKey) {
+    override func setSpaceLocalName(_ keyView: KeyboardKey) {
         keyView.label.text = keyNames["keyboard"]
     }
     
     func disableInput() {
-        self.forwardingView.userInteractionEnabled = false
+        self.forwardingView.isUserInteractionEnabled = false
         
         // Workaround to kill current touches
         self.forwardingView.removeFromSuperview()
@@ -55,7 +55,7 @@ class GiellaKeyboard: KeyboardViewController {
     }
     
     func enableInput() {
-        self.forwardingView.userInteractionEnabled = true
+        self.forwardingView.isUserInteractionEnabled = true
     }
     
     override func showLongPress() {
@@ -115,22 +115,22 @@ class GiellaBanner: ExtraView {
         //self.label.center.y = self.center.y
     }
     
-    func handleBtnPress(sender: UIButton) {
+    func handleBtnPress(_ sender: UIButton) {
         if let kbd = self.keyboard {
             let textDocumentProxy = kbd.textDocumentProxy as UIKeyInput
             textDocumentProxy.insertText(sender.titleLabel!.text!)
             
             kbd.hideLongPress()
             
-            if kbd.shiftState == ShiftState.Enabled {
-                kbd.shiftState = ShiftState.Disabled
+            if kbd.shiftState == ShiftState.enabled {
+                kbd.shiftState = ShiftState.disabled
             }
             
             kbd.setCapsIfNeeded()
         }
     }
     
-    func applyConstraints(currentView: UIButton, prevView: UIView?, nextView: UIView?, firstView: UIView) {
+    func applyConstraints(_ currentView: UIButton, prevView: UIView?, nextView: UIView?, firstView: UIView) {
         let parentView = self
         
         var leftConstraint: NSLayoutConstraint
@@ -139,26 +139,26 @@ class GiellaBanner: ExtraView {
         var bottomConstraint: NSLayoutConstraint
         
         // Constrain to top of parent view
-        topConstraint = NSLayoutConstraint(item: currentView, attribute: .Top, relatedBy: .Equal, toItem: parentView,
-            attribute: .Top, multiplier: 1.0, constant: 1)
+        topConstraint = NSLayoutConstraint(item: currentView, attribute: .top, relatedBy: .equal, toItem: parentView,
+            attribute: .top, multiplier: 1.0, constant: 1)
         
         // Constraint to bottom of parent too
-        bottomConstraint = NSLayoutConstraint(item: currentView, attribute: .Bottom, relatedBy: .Equal, toItem: parentView, attribute: .Bottom, multiplier: 1.0, constant: -1)
+        bottomConstraint = NSLayoutConstraint(item: currentView, attribute: .bottom, relatedBy: .equal, toItem: parentView, attribute: .bottom, multiplier: 1.0, constant: -1)
         
         // If last, constrain to right
         if nextView == nil {
-            rightConstraint = NSLayoutConstraint(item: currentView, attribute: .Right, relatedBy: .Equal, toItem: parentView, attribute: .Right, multiplier: 1.0, constant: -1)
+            rightConstraint = NSLayoutConstraint(item: currentView, attribute: .right, relatedBy: .equal, toItem: parentView, attribute: .right, multiplier: 1.0, constant: -1)
         } else {
-            rightConstraint = NSLayoutConstraint(item: currentView, attribute: .Right, relatedBy: .Equal, toItem: nextView, attribute: .Left, multiplier: 1.0, constant: -1)
+            rightConstraint = NSLayoutConstraint(item: currentView, attribute: .right, relatedBy: .equal, toItem: nextView, attribute: .left, multiplier: 1.0, constant: -1)
         }
         
         // If first, constrain to left of parent
         if prevView == nil {
-            leftConstraint = NSLayoutConstraint(item: currentView, attribute: .Left, relatedBy: .Equal, toItem: parentView, attribute: .Left, multiplier: 1.0, constant: 1)
+            leftConstraint = NSLayoutConstraint(item: currentView, attribute: .left, relatedBy: .equal, toItem: parentView, attribute: .left, multiplier: 1.0, constant: 1)
         } else {
-            leftConstraint = NSLayoutConstraint(item: currentView, attribute: .Left, relatedBy: .Equal, toItem: prevView, attribute: .Right, multiplier: 1.0, constant: 1)
+            leftConstraint = NSLayoutConstraint(item: currentView, attribute: .left, relatedBy: .equal, toItem: prevView, attribute: .right, multiplier: 1.0, constant: 1)
             
-            let widthConstraint = NSLayoutConstraint(item: firstView, attribute: .Width, relatedBy: .Equal, toItem: currentView, attribute: .Width, multiplier: 1.0, constant: 0)
+            let widthConstraint = NSLayoutConstraint(item: firstView, attribute: .width, relatedBy: .equal, toItem: currentView, attribute: .width, multiplier: 1.0, constant: 0)
             
             widthConstraint.priority = 800
             
@@ -170,7 +170,7 @@ class GiellaBanner: ExtraView {
     }
     
     
-    func updateAlternateKeyList(keys: [String]) {
+    func updateAlternateKeyList(_ keys: [String]) {
         let sv = self.subviews
         for v in sv {
             v.removeFromSuperview()
@@ -181,20 +181,20 @@ class GiellaBanner: ExtraView {
         }
         
         for char in keys {
-            let btn: UIButton = UIButton(type: UIButtonType.System) as UIButton
+            let btn: UIButton = UIButton(type: UIButtonType.system) as UIButton
             
-            btn.frame = CGRectMake(0, 0, 20, 20)
-            btn.setTitle(char, forState: .Normal)
+            btn.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+            btn.setTitle(char, for: UIControlState())
             btn.sizeToFit()
-            btn.titleLabel?.font = UIFont.systemFontOfSize(20)
+            btn.titleLabel?.font = UIFont.systemFont(ofSize: 20)
             btn.translatesAutoresizingMaskIntoConstraints = false
             btn.backgroundColor = UIColor(hue: (216/360.0), saturation: 0.1, brightness: 0.81, alpha: 1)
-            btn.setTitleColor(UIColor(white: 1.0, alpha: 1.0), forState: .Normal)
+            btn.setTitleColor(UIColor(white: 1.0, alpha: 1.0), for: UIControlState())
             
-            btn.setContentHuggingPriority(1000, forAxis: .Horizontal)
-            btn.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
+            btn.setContentHuggingPriority(1000, for: .horizontal)
+            btn.setContentCompressionResistancePriority(1000, for: .horizontal)
             
-            btn.addTarget(self, action: Selector("handleBtnPress:"), forControlEvents: .TouchUpInside)
+            btn.addTarget(self, action: #selector(GiellaBanner.handleBtnPress(_:)), for: .touchUpInside)
             
             self.addSubview(btn)
         }
@@ -204,7 +204,7 @@ class GiellaBanner: ExtraView {
         var prevBtn: UIButton?
         var nextBtn: UIButton?
         
-        for (n, view) in self.subviews.enumerate() {
+        for (n, view) in self.subviews.enumerated() {
             let btn = view as! UIButton
             
             if n == lastN {
@@ -225,66 +225,66 @@ class GiellaBanner: ExtraView {
 }
 
 
-func defaultControls(defaultKeyboard: Keyboard, keyNames: [String: String]) -> Keyboard {
-    let isPad = UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Pad
+func defaultControls(_ defaultKeyboard: Keyboard, keyNames: [String: String]) -> Keyboard {
+    let isPad = UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad
 
-    let backspace = Key(.Backspace)
+    let backspace = Key(.backspace)
     
-    let keyModeChangeNumbers = Key(.ModeChange)
+    let keyModeChangeNumbers = Key(.modeChange)
     keyModeChangeNumbers.uppercaseKeyCap = isPad ? ".?123" : "123"
     keyModeChangeNumbers.toMode = 1
     defaultKeyboard.addKey(keyModeChangeNumbers, row: 3, page: 0)
     
-    let keyboardChange = Key(.KeyboardChange)
+    let keyboardChange = Key(.keyboardChange)
     defaultKeyboard.addKey(keyboardChange, row: 3, page: 0)
     
-    let settings = Key(.Settings)
+    let settings = Key(.settings)
     defaultKeyboard.addKey(settings, row: 3, page: 0)
     
-    let space = Key(.Space)
+    let space = Key(.space)
     space.uppercaseKeyCap = keyNames["space"]
     space.uppercaseOutput = " "
     space.lowercaseOutput = " "
     defaultKeyboard.addKey(space, row: 3, page: 0)
     
-    let returnKey = Key(.Return)
+    let returnKey = Key(.return)
     returnKey.uppercaseKeyCap = keyNames["return"]
     returnKey.uppercaseOutput = "\n"
     returnKey.lowercaseOutput = "\n"
     defaultKeyboard.addKey(isPad ? Key(keyModeChangeNumbers) : returnKey, row: 3, page: 0)
     
     if isPad {
-        let hideKey = Key(.KeyboardHide)
+        let hideKey = Key(.keyboardHide)
         hideKey.uppercaseKeyCap = "⥥"
         defaultKeyboard.addKey(hideKey, row: 3, page: 0)
     }
     
     for key in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"] {
-        let keyModel = Key(.SpecialCharacter)
+        let keyModel = Key(.specialCharacter)
         keyModel.setLetter(key)
         defaultKeyboard.addKey(keyModel, row: 0, page: 1)
     }
     
     for key in ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""] {
-        let keyModel = Key(.SpecialCharacter)
+        let keyModel = Key(.specialCharacter)
         keyModel.setLetter(key)
         defaultKeyboard.addKey(keyModel, row: 1, page: 1)
     }
     
-    let keyModeChangeSpecialCharacters = Key(.ModeChange)
+    let keyModeChangeSpecialCharacters = Key(.modeChange)
     keyModeChangeSpecialCharacters.uppercaseKeyCap = "#+="
     keyModeChangeSpecialCharacters.toMode = 2
     defaultKeyboard.addKey(keyModeChangeSpecialCharacters, row: 2, page: 1)
     
     for key in [".", ",", "?", "!", "'"] {
-        let keyModel = Key(.SpecialCharacter)
+        let keyModel = Key(.specialCharacter)
         keyModel.setLetter(key)
         defaultKeyboard.addKey(keyModel, row: 2, page: 1)
     }
     
     defaultKeyboard.addKey(Key(backspace), row: 2, page: 1)
     
-    let keyModeChangeLetters = Key(.ModeChange)
+    let keyModeChangeLetters = Key(.modeChange)
     keyModeChangeLetters.uppercaseKeyCap = "ABC"
     keyModeChangeLetters.toMode = 0
     defaultKeyboard.addKey(keyModeChangeLetters, row: 3, page: 1)
@@ -298,13 +298,13 @@ func defaultControls(defaultKeyboard: Keyboard, keyNames: [String: String]) -> K
     defaultKeyboard.addKey(Key(returnKey), row: 3, page: 1)
     
     for key in ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="] {
-        let keyModel = Key(.SpecialCharacter)
+        let keyModel = Key(.specialCharacter)
         keyModel.setLetter(key)
         defaultKeyboard.addKey(keyModel, row: 0, page: 2)
     }
     
     for key in ["_", "\\", "|", "~", "<", ">", "€", "£", "Y", "•"] {
-        let keyModel = Key(.SpecialCharacter)
+        let keyModel = Key(.specialCharacter)
         keyModel.setLetter(key)
         defaultKeyboard.addKey(keyModel, row: 1, page: 2)
     }
@@ -312,7 +312,7 @@ func defaultControls(defaultKeyboard: Keyboard, keyNames: [String: String]) -> K
     defaultKeyboard.addKey(Key(keyModeChangeNumbers), row: 2, page: 2)
     
     for key in [".", ",", "?", "!", "'"] {
-        let keyModel = Key(.SpecialCharacter)
+        let keyModel = Key(.specialCharacter)
         keyModel.setLetter(key)
         defaultKeyboard.addKey(keyModel, row: 2, page: 2)
     }
